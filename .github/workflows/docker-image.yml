@@ -14,9 +14,22 @@ jobs:
   build_deploy_to_registry:
     runs-on: ubuntu-latest
     steps:
-    - name: Publish to Registry
-      uses: docker/build-push-action@v1
-      with:
-        repository: mjayson/nexus3-rpi
-        username: ${{ secrets.docker_username }}
-        password: ${{ secrets.docker_password }}
+            - uses: actions/checkout@v1
+            - name: Login to DockerHub Registry
+              run: echo ${{ secrets.docker_username }} | docker login -u ${{ secrets.docker_password }} --password-stdin
+            - name: Get the version
+              id: vars
+              run: echo ::set-output name=tag::$(echo ${GITHUB_REF:10})
+              
+            - name: Build the tagged Docker image
+              run: docker build . --file Dockerfile --tag mjayson/nexus3-rpi:${{steps.vars.outputs.tag}}
+            
+            - name: Push the tagged Docker image
+              run: docker push mjayson/nexus3-rpi:${{steps.vars.outputs.tag}}
+            
+            - name: Build the latest Docker image
+              run: docker build . --file Dockerfile --tag mjayson/nexus3-rpi:latest
+            
+            - name: Push the latest Docker image
+              run: docker push mjayson/nexus3-rpi:latest
+
