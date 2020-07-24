@@ -15,8 +15,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Publish to Registry
-      uses: elgohr/Publish-Docker-Github-Action@master
+      uses: docker/build-push-action@v1
       with:
-        name: mjayson/nexus3-rpi
+        repository: mjayson/nexus3-rpi
         username: ${{ secrets.docker_username }}
         password: ${{ secrets.docker_password }}
