@@ -24,4 +24,7 @@ jobs:
         run: docker login --username '${{secrets.docker_username}}' --password '${{secrets.docker_password}}'
 
       - name: Build + Push image ("master")
-        run: docker build -t mjayson/nexus3-rpi . 
+        run: docker buildx build \
+            --tag "${{secrets.docker_username}}/nexus3:${GITHUB_REF#refs/tags/}" \
+            --output "type=image,push=true" \
+            --file ./Dockerfile .
