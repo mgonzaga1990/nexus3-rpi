@@ -20,12 +20,6 @@ jobs:
             - name: Get the version
               id: vars
               run: echo ::set-output name=tag::$(echo ${GITHUB_REF:10})
-              
-            - name: Build the tagged Docker image
-              run: docker build . --file Dockerfile --tag mjayson/nexus3-rpi:${{steps.vars.outputs.tag}}
-            
-            - name: Push the tagged Docker image
-              run: docker push mjayson/nexus3-rpi:${{steps.vars.outputs.tag}}
             
             - name: Build the latest Docker image
               run: docker build . --file Dockerfile --tag mjayson/nexus3-rpi:latest
