@@ -1,0 +1,27 @@
+name: Deploy Development Build
+
+# Trigger on push to "master" branch
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - .github/**
+      - start-nexus-repository-manager.sh 
+      - Dockerfile
+
+jobs:
+  build_deploy_to_registry:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Set up Docker Buildx
+        uses: crazy-max/ghaction-docker-buildx@v3.1.0
+
+      - name: Docker login
+        run: docker login --username '${{secrets.docker_username}}' --password '${{secrets.docker_password}}'
+
+      - name: Build + Push image ("master")
+        run: docker build -t mjayson/nexus3-rpi
