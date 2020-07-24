@@ -23,8 +23,10 @@ jobs:
       - name: Docker login
         run: docker login --username '${{secrets.docker_username}}' --password '${{secrets.docker_password}}'
 
-      - name: Build + Push image ("master")
-        run: docker buildx build \
-            --tag "${{secrets.docker_username}}/nexus3:${GITHUB_REF#refs/tags/}" \
+      - name: Build + Push image ("latest")
+        run: |
+          docker buildx build \
+            --platform "linux/arm/v7,linux/arm64" \
+            --tag "${{secrets.docker_username}}/nexus3:latest" \
             --output "type=image,push=true" \
             --file ./Dockerfile .
